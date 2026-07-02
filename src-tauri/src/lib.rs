@@ -85,8 +85,13 @@ pub fn run() {
                 Some(tauri::menu::AboutMetadata {
                     name: Some("Teki DATEV Viewer".into()),
                     version: Some(app.package_info().version.to_string()),
-                    authors: Some(vec!["Teki".into()]),
-                    comments: Some("Read-only DATEV inspection tool".into()),
+                    authors: Some(vec!["Sergii Katrych".into()]),
+                    comments: Some(
+                        "Read-only DATEV inspection tool.\nCopyright © Sergii Katrych, TekInvent.io"
+                            .into(),
+                    ),
+                    copyright: Some("Copyright © Sergii Katrych, TekInvent.io".into()),
+                    credits: Some("Read-only DATEV inspection tool.".into()),
                     ..Default::default()
                 }),
             )?;

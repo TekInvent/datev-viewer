@@ -38,6 +38,28 @@ body, html {
   box-sizing: border-box;
 }
 
+.language-switcher-global {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 1100;
+}
+
+.language-switcher {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.language-switcher:hover {
+  border-color: #ccc;
+}
+
 /* Drag overlay */
 .app-container.dragging::after {
   content: "";

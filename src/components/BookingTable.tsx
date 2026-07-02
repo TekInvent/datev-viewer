@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { useLocale } from "../i18n";
 import { BookingRecord } from "../types";
 
 /**
@@ -26,6 +27,8 @@ interface SortState {
 }
 
 export function BookingTable({ records }: BookingTableProps) {
+  const { t, tCount } = useLocale();
+
   // 1. Search State
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -38,17 +41,17 @@ export function BookingTable({ records }: BookingTableProps) {
   // 3. Columns configuration with resizing
   const columns = useMemo(
     () => [
-      { key: "row_number", label: "Row" },
-      { key: "amount", label: "Amount" },
-      { key: "debit_credit", label: "D/C" },
-      { key: "date", label: "Date" },
-      { key: "account", label: "Account" },
-      { key: "contra_account", label: "Contra Account" },
-      { key: "tax_key", label: "Tax Key" },
-      { key: "document_reference", label: "Doc Ref" },
-      { key: "booking_text", label: "Booking Text" },
+      { key: "row_number", label: t("table_col_row") },
+      { key: "amount", label: t("table_col_amount") },
+      { key: "debit_credit", label: t("table_col_dc") },
+      { key: "date", label: t("table_col_date") },
+      { key: "account", label: t("table_col_account") },
+      { key: "contra_account", label: t("table_col_contra_account") },
+      { key: "tax_key", label: t("table_col_tax_key") },
+      { key: "document_reference", label: t("table_col_doc_ref") },
+      { key: "booking_text", label: t("table_col_booking_text") },
     ],
-    []
+    [t],
   );
 
   const [widths, setWidths] = useState<Record<string, number>>({
@@ -285,7 +288,7 @@ export function BookingTable({ records }: BookingTableProps) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedRows, selectedCell, sortedRecords]);
+  }, [selectedRows, selectedCell, sortedRecords, columns]);
 
   return (
     <div className="booking-table-card">
@@ -295,7 +298,7 @@ export function BookingTable({ records }: BookingTableProps) {
           <input
             type="text"
             className="table-search-input"
-            placeholder="Search bookings..."
+            placeholder={t("table_search_placeholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -309,24 +312,24 @@ export function BookingTable({ records }: BookingTableProps) {
         <div className="selection-actions">
           {selectedRows.size > 0 && (
             <span className="selection-info">
-              {selectedRows.size} {selectedRows.size === 1 ? "row" : "rows"} selected
+              {tCount("table_rows_selected", selectedRows.size)}
             </span>
           )}
           {selectedCell && (
-            <span className="selection-info">Cell selected</span>
+            <span className="selection-info">{t("table_cell_selected")}</span>
           )}
           {(selectedRows.size > 0 || selectedCell) && (
             <>
               <button className="table-action-btn copy" onClick={executeCopy}>
-                📋 Copy
+                📋 {t("table_copy")}
               </button>
               <button className="table-action-btn clear" onClick={clearSelection}>
-                Clear Selection
+                {t("table_clear_selection")}
               </button>
             </>
           )}
           {copiedNotification && (
-            <span className="copied-toast">Copied to clipboard!</span>
+            <span className="copied-toast">{t("table_copied_toast")}</span>
           )}
         </div>
       </div>
@@ -381,7 +384,7 @@ export function BookingTable({ records }: BookingTableProps) {
           onScroll={handleScroll}
         >
           {sortedRecords.length === 0 ? (
-            <div className="table-empty-state">No matching bookings found.</div>
+            <div className="table-empty-state">{t("table_empty_state")}</div>
           ) : (
             <div
               className="table-body-virtual"

@@ -6,6 +6,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { DatevFile, OpenFileError, DatevHeader, Totals as TotalsType } from "./types";
 import { ValidationResults } from "./components/ValidationResults";
 import { BookingTable } from "./components/BookingTable";
+import { LanguageSwitcher, useLocale } from "./i18n";
 
 type AppState = "STARTUP" | "REVIEW" | "ERROR";
 
@@ -23,16 +24,18 @@ interface ToolbarProps {
 }
 
 function Toolbar({ onOpen, onReload, onClose }: ToolbarProps) {
+  const { t } = useLocale();
+
   return (
     <div className="toolbar">
       <button className="toolbar-btn" onClick={onOpen}>
-        <span>📂</span> Open
+        <span>📂</span> {t("toolbar_open")}
       </button>
       <button className="toolbar-btn" onClick={onReload}>
-        <span>🔄</span> Reload
+        <span>🔄</span> {t("toolbar_reload")}
       </button>
       <button className="toolbar-btn" onClick={onClose}>
-        <span>✕</span> Close File
+        <span>✕</span> {t("toolbar_close_file")}
       </button>
     </div>
   );
@@ -55,37 +58,39 @@ function FileSummary({
   lineEnding,
   recordCount,
 }: FileSummaryProps) {
+  const { t } = useLocale();
+
   return (
     <div className="card file-summary-card">
-      <h3>File Summary</h3>
+      <h3>{t("file_summary_title")}</h3>
       <div className="summary-grid">
         <div className="summary-item">
-          <span className="label">Filename</span>
+          <span className="label">{t("file_summary_filename")}</span>
           <span className="value filename" title={fileName}>{fileName}</span>
         </div>
         <div className="summary-item full-width">
-          <span className="label">Absolute Path</span>
+          <span className="label">{t("file_summary_path")}</span>
           <span className="value path" title={filePath}>{filePath}</span>
         </div>
         <div className="summary-item">
-          <span className="label">Size</span>
+          <span className="label">{t("file_summary_size")}</span>
           <span className="value">{formatFileSize(fileSize)}</span>
         </div>
         <div className="summary-item">
-          <span className="label">Encoding</span>
+          <span className="label">{t("file_summary_encoding")}</span>
           <span className="value">{encoding}</span>
         </div>
         <div className="summary-item">
-          <span className="label">Line Endings</span>
+          <span className="label">{t("file_summary_line_endings")}</span>
           <span className="value">{lineEnding}</span>
         </div>
         <div className="summary-item">
-          <span className="label">Record Count</span>
+          <span className="label">{t("file_summary_record_count")}</span>
           <span className="value">{recordCount}</span>
         </div>
         <div className="summary-item">
-          <span className="label">Parser Status</span>
-          <span className="value status-badge ok">Parsed</span>
+          <span className="label">{t("file_summary_parser_status")}</span>
+          <span className="value status-badge ok">{t("file_summary_parsed")}</span>
         </div>
       </div>
     </div>
@@ -97,21 +102,23 @@ interface HeaderMetadataProps {
 }
 
 function HeaderMetadata({ header }: HeaderMetadataProps) {
+  const { t } = useLocale();
+
   const fields = [
-    { label: "Format Identifier", value: header.format_identifier },
-    { label: "Format Version", value: header.version },
-    { label: "Consultant Number", value: header.consultant_number },
-    { label: "Client Number", value: header.client_number },
-    { label: "Accounting Period", value: header.accounting_period },
-    { label: "Fiscal Year", value: header.fiscal_year || "-" },
-    { label: "Export Date", value: header.export_date || "-" },
+    { label: t("header_format_identifier"), value: header.format_identifier },
+    { label: t("header_format_version"), value: header.version },
+    { label: t("header_consultant_number"), value: header.consultant_number },
+    { label: t("header_client_number"), value: header.client_number },
+    { label: t("header_accounting_period"), value: header.accounting_period },
+    { label: t("header_fiscal_year"), value: header.fiscal_year || "-" },
+    { label: t("header_export_date"), value: header.export_date || "-" },
   ];
 
   const unknownFields = Object.entries(header.unknown_fields);
 
   return (
     <div className="card header-metadata-card">
-      <h3>Header Metadata</h3>
+      <h3>{t("header_metadata_title")}</h3>
       <div className="metadata-grid">
         {fields.map((f, i) => (
           <div key={i} className="metadata-item">
@@ -123,11 +130,11 @@ function HeaderMetadata({ header }: HeaderMetadataProps) {
 
       {unknownFields.length > 0 && (
         <div className="unknown-fields-section">
-          <h4>Unknown Fields</h4>
+          <h4>{t("header_unknown_fields")}</h4>
           <div className="metadata-grid">
             {unknownFields.map(([key, value]) => (
               <div key={key} className="metadata-item">
-                <span className="label">Field {key}</span>
+                <span className="label">{t("header_field_number", { field: key })}</span>
                 <span className="value">{value}</span>
               </div>
             ))}
@@ -143,37 +150,34 @@ interface TotalsProps {
 }
 
 function Totals({ totals }: TotalsProps) {
-  const formatAmount = (val: number | null) => {
-    if (val === null || val === undefined) return "-";
-    return val.toFixed(2);
-  };
+  const { t, formatNumber } = useLocale();
 
   return (
     <div className="card totals-card">
-      <h3>Totals & Statistics</h3>
+      <h3>{t("totals_title")}</h3>
       <div className="totals-grid">
         <div className="totals-item">
-          <span className="label">Booking Count</span>
+          <span className="label">{t("totals_booking_count")}</span>
           <span className="value count">{totals.booking_count}</span>
         </div>
         <div className="totals-item">
-          <span className="label">Total Amount</span>
-          <span className="value amount">{formatAmount(totals.total_amount)}</span>
+          <span className="label">{t("totals_total_amount")}</span>
+          <span className="value amount">{formatNumber(totals.total_amount)}</span>
         </div>
         <div className="totals-item">
-          <span className="label">Debit Total</span>
-          <span className="value amount debit">{formatAmount(totals.debit_total)}</span>
+          <span className="label">{t("totals_debit_total")}</span>
+          <span className="value amount debit">{formatNumber(totals.debit_total)}</span>
         </div>
         <div className="totals-item">
-          <span className="label">Credit Total</span>
-          <span className="value amount credit">{formatAmount(totals.credit_total)}</span>
+          <span className="label">{t("totals_credit_total")}</span>
+          <span className="value amount credit">{formatNumber(totals.credit_total)}</span>
         </div>
         <div className="totals-item">
-          <span className="label">Warnings</span>
+          <span className="label">{t("totals_warnings")}</span>
           <span className="value count warning">{totals.warning_count}</span>
         </div>
         <div className="totals-item">
-          <span className="label">Errors</span>
+          <span className="label">{t("totals_errors")}</span>
           <span className="value count error">{totals.error_count}</span>
         </div>
       </div>
@@ -182,6 +186,7 @@ function Totals({ totals }: TotalsProps) {
 }
 
 function App() {
+  const { t } = useLocale();
   const [appState, setAppState] = useState<AppState>("STARTUP");
   const [filePath, setFilePath] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -327,22 +332,26 @@ function App() {
 
   return (
     <div className={`app-container ${isDragging ? "dragging" : ""}`}>
+      <div className="language-switcher-global">
+        <LanguageSwitcher />
+      </div>
+
       {isDragging && (
         <div className="drag-overlay">
-          <div className="drag-overlay-text">Drop the DATEV file here</div>
+          <div className="drag-overlay-text">{t("drag_overlay")}</div>
         </div>
       )}
 
       {appState === "STARTUP" && (
         <div className="startup-screen">
           <div className="startup-content">
-            <h1 className="startup-title">Drag and drop a DATEV file here</h1>
-            <p className="startup-divider">or</p>
+            <h1 className="startup-title">{t("startup_title")}</h1>
+            <p className="startup-divider">{t("startup_or")}</p>
             <button
               className="startup-button"
               onClick={triggerOpenFileSelector}
             >
-              File &rarr; Open DATEV File&hellip;
+              {t("startup_button")}
             </button>
           </div>
         </div>
@@ -383,23 +392,23 @@ function App() {
         <div className="error-screen">
           <div className="error-container">
             <div className="error-header">
-              <span className="error-badge">Error</span>
-              <h1 className="error-title">Failed to Open DATEV File</h1>
+              <span className="error-badge">{t("error_badge")}</span>
+              <h1 className="error-title">{t("error_title")}</h1>
             </div>
 
             <div className="error-details">
               <div className="error-field">
-                <span className="field-label">File:</span>
+                <span className="field-label">{t("error_field_file")}</span>
                 <span className="field-value filename">{fileName}</span>
               </div>
               {filePath && (
                 <div className="error-field path-field">
-                  <span className="field-label">Path:</span>
+                  <span className="field-label">{t("error_field_path")}</span>
                   <span className="field-value path">{filePath}</span>
                 </div>
               )}
               <div className="error-field">
-                <span className="field-label">Reason:</span>
+                <span className="field-label">{t("error_field_reason")}</span>
                 <span className="field-value error-message">{error?.message}</span>
               </div>
 
@@ -407,13 +416,13 @@ function App() {
                 <div className="error-meta-grid">
                   {error.encoding && (
                     <div className="meta-item">
-                      <span className="meta-label">Detected Encoding</span>
+                      <span className="meta-label">{t("error_detected_encoding")}</span>
                       <span className="meta-value">{error.encoding}</span>
                     </div>
                   )}
                   {error.line_ending && (
                     <div className="meta-item">
-                      <span className="meta-label">Line Endings</span>
+                      <span className="meta-label">{t("error_line_endings")}</span>
                       <span className="meta-value">{error.line_ending}</span>
                     </div>
                   )}
@@ -423,7 +432,11 @@ function App() {
               {error?.offending_line !== undefined && error?.offending_line !== null && (
                 <div className="error-code-block">
                   <div className="code-block-header">
-                    <span>Problematic Line {error.line_number !== null ? `(${error.line_number})` : ""}</span>
+                    <span>
+                      {error.line_number !== null
+                        ? t("error_problematic_line_number", { line: error.line_number })
+                        : t("error_problematic_line")}
+                    </span>
                   </div>
                   <pre className="code-content">
                     <code>
@@ -439,10 +452,10 @@ function App() {
 
             <div className="error-actions">
               <button className="primary-btn" onClick={triggerOpenFileSelector}>
-                Open Another File&hellip;
+                {t("error_open_another")}
               </button>
               <button className="secondary-btn" onClick={handleCloseFile}>
-                Back to Home
+                {t("error_back_home")}
               </button>
             </div>
           </div>

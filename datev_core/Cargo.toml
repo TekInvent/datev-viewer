@@ -2,6 +2,7 @@
 name = "datev_core"
 version = "0.1.0"
 edition = "2021"
+authors = ["Sergii Katrych"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
