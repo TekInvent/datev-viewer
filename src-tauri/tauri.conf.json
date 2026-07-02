@@ -1,7 +1,7 @@
 {
   "productName": "teki-datev-viewer",
   "version": "0.1.0",
-  "identifier": "com.teki-datev-viewer.app",
+  "identifier": "com.teki-datev-viewer",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
