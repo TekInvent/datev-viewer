@@ -1,0 +1,26 @@
+# Rust build artifacts
+target/
+
+# Node dependencies and build output
+node_modules/
+dist/
+
+# Tauri generated files (not source-controlled)
+src-tauri/gen/
+
+# AI agent task files
+tasks/
+task*.md
+
+# macOS metadata
+.DS_Store
+
+# Editor/IDE directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local

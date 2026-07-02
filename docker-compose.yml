@@ -1,0 +1,21 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: teki-datev-viewer-dev
+    volumes:
+      # Mount the workspace
+      - .:/workspace
+      # Persist Cargo registry and build cache between runs
+      - cargo-cache:/cargo-cache
+      - cargo-target:/workspace/target
+    working_dir: /workspace
+    # Keep container alive for exec-style one-shot commands
+    command: bash -c "tail -f /dev/null"
+    environment:
+      - CARGO_HOME=/cargo-cache
+
+volumes:
+  cargo-cache:
+  cargo-target:
