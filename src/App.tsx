@@ -19,9 +19,10 @@ function formatFileSize(bytes: number): string {
 interface ToolbarProps {
   onOpen: () => void;
   onReload: () => void;
+  onClose: () => void;
 }
 
-function Toolbar({ onOpen, onReload }: ToolbarProps) {
+function Toolbar({ onOpen, onReload, onClose }: ToolbarProps) {
   return (
     <div className="toolbar">
       <button className="toolbar-btn" onClick={onOpen}>
@@ -29,6 +30,9 @@ function Toolbar({ onOpen, onReload }: ToolbarProps) {
       </button>
       <button className="toolbar-btn" onClick={onReload}>
         <span>🔄</span> Reload
+      </button>
+      <button className="toolbar-btn" onClick={onClose}>
+        <span>✕</span> Close File
       </button>
     </div>
   );
@@ -349,6 +353,7 @@ function App() {
           <Toolbar
             onOpen={triggerOpenFileSelector}
             onReload={handleReloadFile}
+            onClose={handleCloseFile}
           />
           <div className="review-layout">
             <div className="review-sidebar">

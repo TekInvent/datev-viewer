@@ -141,10 +141,12 @@ const fallbackDmgBuild = () => {
     String(windowSize.height),
     "--hide-extension",
     appBundle.entry,
-    "--volicon",
-    path.relative(bundleMacosDir, volumeIconPath),
     "--skip-jenkins",
   ];
+
+  if (existsSync(volumeIconPath)) {
+    scriptArgs.push("--volicon", path.relative(bundleMacosDir, volumeIconPath));
+  }
 
   if (dmgConfig.windowPosition) {
     scriptArgs.push(
